@@ -1,0 +1,41 @@
+version: '3.1'
+services:
+  nginx:
+    container_name: "${PROJECT_NAME}_nginx"
+    ports:
+      - 8080:80
+    build:
+      context: ./nginx
+      args:
+        - PROJECT_NAME
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - php
+  php:
+    container_name: "${PROJECT_NAME}_php"
+    hostname: docker
+    build:
+      context: ./php-fpm
+      args:
+        - PROJECT_NAME
+        - USER_ID
+        - GROUP_ID
+    volumes:
+      - "./home:/home/${PROJECT_NAME}"
+      - "./src:/var/www"
+    working_dir: "/var/www/${PROJECT_NAME}.loc"
+    environment:
+      TERM: "${TERM}"
+  database:
+    container_name: "${PROJECT_NAME}_database"
+    ports:
+      - 5432:5432
+    build:
+      context: ./database
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_ROOT_PASSWORD: docker
+      POSTGRES_HOST_AUTH_METHOD: trust
