@@ -3,7 +3,7 @@ services:
   nginx:
     container_name: "${PROJECT_NAME}_nginx"
     ports:
-      - 8080:80
+      - 80:80
     build:
       context: ./nginx
       args:
