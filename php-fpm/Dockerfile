@@ -17,7 +17,12 @@ RUN set -ex \
     openssh-client \
     && useradd -m "${PROJECT_NAME}" -s /bin/bash -u "${USER_ID}" -U
 
-RUN docker-php-ext-install pdo pdo_pgsql pgsql zip gd
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash
+RUN apk add symfony-cli
+
+RUN docker-php-ext-install pdo pdo_pgsql pgsql zip gd intl opcache
 
 RUN wget https://getcomposer.org/installer -O - -q \
     | php -- --install-dir=/bin --filename=composer --quiet
